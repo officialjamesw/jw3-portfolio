@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Home-lab — jw3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0c0d; --bg-alt: #131316; --bg-soft: #18181c;
+  --fg: #ededee; --fg-soft: #a1a1a8; --fg-muted: #5a5a62;
+  --fg-dim: #383840; --line: #232328; --hl: #f4ce6b;
+  --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+[data-theme="light"] {
+  --bg: #fafaf8; --bg-alt: #f0f0ec; --bg-soft: #f5f5f1;
+  --fg: #111113; --fg-soft: #4a4a52; --fg-muted: #888890;
+  --fg-dim: #cdcdc8; --line: #d8d8d2; --hl: #b1850b;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--fg); font-family: var(--mono); font-size: 14px; line-height: 1.65; -webkit-font-smoothing: antialiased; transition: background .35s ease, color .35s ease; }
+a { color: inherit; text-decoration: none; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 0 40px; }
+.topbar { position: sticky; top: 0; z-index: 50; background: color-mix(in oklab, var(--bg) 90%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.topbar-in { max-width: 720px; margin: 0 auto; padding: 14px 40px; display: flex; align-items: center; gap: 16px; }
+.back-btn { font-size: 12px; color: var(--fg-soft); padding: 6px 12px; border-radius: 6px; border: 1px solid var(--line); background: transparent; transition: background .15s, color .15s; display: inline-flex; align-items: center; gap: 6px; }
+.back-btn:hover { background: var(--bg-alt); color: var(--fg); }
+.topbar-path { font-size: 12.5px; color: var(--fg-muted); margin-left: 4px; }
+.topbar-path b { color: var(--fg); }
+.theme-btn { margin-left: auto; background: transparent; border: 1px solid var(--line); color: var(--fg); padding: 6px 10px; border-radius: 6px; font-family: var(--mono); font-size: 12px; cursor: pointer; transition: background .15s; display: flex; align-items: center; gap: 8px; }
+.theme-btn:hover { background: var(--bg-alt); }
+.post-hero { padding: 56px 0 36px; border-bottom: 1px solid var(--line); margin-bottom: 48px; }
+.post-tag { font-size: 11px; color: var(--hl); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; }
+.post-tag::before { content: "## "; }
+.post-title { font-size: clamp(24px, 4vw, 40px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 20px; }
+.post-meta { display: flex; gap: 20px; font-size: 12px; color: var(--fg-muted); flex-wrap: wrap; }
+.post-meta span::before { content: "// "; color: var(--hl); }
+.post-body { padding-bottom: 100px; }
+.post-body p { font-size: 13.5px; line-height: 1.9; color: var(--fg-soft); margin-bottom: 20px; }
+.post-body p strong { color: var(--fg); font-weight: 600; }
+.post-body p em { color: var(--fg); font-style: italic; }
+.post-body h2 { font-size: 13px; font-weight: 600; color: var(--fg); margin: 40px 0 14px; letter-spacing: 0.02em; }
+.post-body h2::before { content: "## "; color: var(--hl); }
+.post-body ul { list-style: none; margin: 0 0 20px; padding: 0; }
+.post-body li { font-size: 13px; line-height: 1.75; color: var(--fg-soft); padding: 6px 0 6px 22px; position: relative; border-bottom: 1px dotted var(--line); }
+.post-body li:last-child { border-bottom: none; }
+.post-body li::before { content: "▸"; position: absolute; left: 0; color: var(--hl); }
+.post-body li strong { color: var(--fg); }
+.codeblock { background: var(--bg-soft); border: 1px solid var(--line); border-radius: 8px; padding: 16px 20px; margin: 20px 0; font-size: 12.5px; color: var(--fg-soft); overflow-x: auto; white-space: pre; }
+.codeblock .c { color: var(--fg-muted); }
+.codeblock .k { color: var(--hl); }
+.callout { border-left: 2px solid var(--hl); padding: 14px 18px; background: var(--bg-soft); border-radius: 0 8px 8px 0; margin: 24px 0; }
+.callout p { margin: 0; color: var(--fg-soft); font-size: 13px; }
+.callout p strong { color: var(--fg); }
+footer { border-top: 1px solid var(--line); padding: 20px 40px; display: flex; justify-content: space-between; font-size: 11.5px; color: var(--fg-muted); max-width: 720px; margin: 0 auto; }
+@media (max-width: 760px) { .wrap, .topbar-in, footer { padding-left: 20px; padding-right: 20px; } }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="back-btn" href="../index.html">← cd ..</a>
+    <span class="topbar-path">~/jw3/posts/<b>home-lab</b></span>
+    <button class="theme-btn" id="themeBtn"><span id="themeIcon">☾</span><span id="themeLabel">dark</span></button>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="post-hero">
+      <div class="post-tag">infra</div>
+      <h1 class="post-title">On building a home-lab that survives my own changes</h1>
+      <div class="post-meta">
+        <span>2025.09.06</span>
+        <span>5 min read</span>
+        <span>James Wilson III</span>
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      <p>The hardest part of running a home-lab long-term isn't setting it up — it's setting it up in a way that still makes sense six months later when you've changed things, broken things, and forgotten why you made the decisions you made. Most guides optimize for getting something working. This is about keeping it working through your own future interventions.</p>
+
+      <p>My current setup is built around a Raspberry Pi 3B+ and an Arch Linux main machine. The Pi handles always-on services; the Arch box handles everything else. The philosophy that's kept it stable: <strong>every service should be independently reachable, and nothing should depend on remembering a port number or an IP.</strong></p>
+
+      <h2>The Pi stack</h2>
+
+      <p>The Pi runs three things that I actually use constantly:</p>
+
+      <ul>
+        <li><strong>NAS over SSH:</strong> SSHFS mounts from the main machine when I need it. Simple, no Samba complexity, no random Windows compatibility issues. The Pi's SSH config is locked down — key-only auth, no password, AllowUsers explicit.</li>
+        <li><strong>WireGuard via PiVPN:</strong> the single best decision I made for this setup. WireGuard's handshake is fast enough that I leave it on all the time on my phone. Split tunneling to route only local traffic through it, so I'm not throttling everything.</li>
+        <li><strong>DuckDNS:</strong> dynamic DNS so I can reach the Pi by name regardless of what my ISP has assigned me. A cron job updates the record every five minutes. The domain is stable; the IP is ephemeral and I never have to think about it.</li>
+      </ul>
+
+      <div class="callout">
+        <p><strong>The WireGuard + DuckDNS combination</strong> is what actually makes the lab useful remotely. Without stable naming, you're either memorizing IPs or updating config files every time your ISP rotates your address. The cron updater is four lines and runs forever.</p>
+      </div>
+
+      <div class="codeblock"><span class="c"># /etc/cron.d/duckdns — runs every 5 minutes</span>
+*/5 * * * * root curl -s \
+  "https://www.duckdns.org/update?domains=YOURDOMAIN\
+  &token=YOURTOKEN&ip=" > /var/log/duckdns.log 2>&1</div>
+
+      <h2>Arch as a daily driver</h2>
+
+      <p>I've been on Arch long enough that the "btw" joke has stopped being funny and started being just accurate. The appeal isn't masochism — it's that the system does exactly what I told it to do, and nothing else. No background services I didn't ask for, no package manager second-guessing my decisions, no distribution-level opinions about how I should configure things.</p>
+
+      <p>The tradeoff is maintenance overhead. Arch updates break things occasionally, and when they do, it's usually because something changed upstream that I didn't notice. The practice that's kept this manageable:</p>
+
+      <ul>
+        <li><strong>Read the Arch Linux news feed before updating.</strong> Not always, but before any big update batch. Most breakage is announced in advance.</li>
+        <li><strong>Never run a full system update right before you need the machine to work.</strong> Friday afternoon before a weekend project is not the time.</li>
+        <li><strong>Keep a working timeshift snapshot.</strong> Btrfs snapshots are cheap and have saved me more than once. The barrier to rolling back needs to be zero.</li>
+        <li><strong>Document your AUR packages separately.</strong> They're not in pacman's main log and they drift in ways that official packages don't.</li>
+      </ul>
+
+      <h2>The principle that holds it together</h2>
+
+      <p>Everything in the lab follows one rule: if I came back to it after three months away, could I figure out what it's doing and why from the files alone? If not, I'm building something fragile.</p>
+
+      <p>In practice this means comments in config files, a plain-text notes file in each service directory, and no "I'll remember what this does" shortcuts. The future version of me has a bad memory and is annoyed at the past version of me for assuming otherwise.</p>
+
+      <p>The lab has paid off in a way I didn't fully anticipate: the operational experience transfers directly to work. Thinking about network segmentation, managing SSH keys, running WireGuard — these aren't abstract concepts when you've set them up yourself and debugged them at 11pm because something stopped working. The hands-on reps matter, and the home-lab is where I get them at a pace and scope I control.</p>
+
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div>© 2026 james wilson iii</div>
+  <div><a href="../index.html#writing" style="color:var(--fg-muted);">← back to writing</a></div>
+</footer>
+
+<script>
+const themeBtn = document.getElementById('themeBtn');
+const themeIcon = document.getElementById('themeIcon');
+const themeLabel = document.getElementById('themeLabel');
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  themeIcon.textContent = t === 'dark' ? '☾' : '☀';
+  themeLabel.textContent = t;
+  try { localStorage.setItem('jw3-term-theme', t); } catch(e) {}
+}
+try { const s = localStorage.getItem('jw3-term-theme'); if (s) setTheme(s); } catch(e) {}
+themeBtn.addEventListener('click', () => {
+  setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+</script>
+</body>
+</html>

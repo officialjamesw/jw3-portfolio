@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Communication drift — jw3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0c0d; --bg-alt: #131316; --bg-soft: #18181c;
+  --fg: #ededee; --fg-soft: #a1a1a8; --fg-muted: #5a5a62;
+  --fg-dim: #383840; --line: #232328; --hl: #f4ce6b;
+  --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+[data-theme="light"] {
+  --bg: #fafaf8; --bg-alt: #f0f0ec; --bg-soft: #f5f5f1;
+  --fg: #111113; --fg-soft: #4a4a52; --fg-muted: #888890;
+  --fg-dim: #cdcdc8; --line: #d8d8d2; --hl: #b1850b;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--mono); font-size: 14px; line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  transition: background .35s ease, color .35s ease;
+}
+a { color: inherit; text-decoration: none; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 0 40px; }
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  background: color-mix(in oklab, var(--bg) 90%, transparent);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.topbar-in {
+  max-width: 720px; margin: 0 auto; padding: 14px 40px;
+  display: flex; align-items: center; gap: 16px;
+}
+.back-btn {
+  font-size: 12px; color: var(--fg-soft);
+  padding: 6px 12px; border-radius: 6px; border: 1px solid var(--line);
+  background: transparent; transition: background .15s, color .15s;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.back-btn:hover { background: var(--bg-alt); color: var(--fg); }
+.topbar-path { font-size: 12.5px; color: var(--fg-muted); margin-left: 4px; }
+.topbar-path b { color: var(--fg); }
+.theme-btn {
+  margin-left: auto;
+  background: transparent; border: 1px solid var(--line);
+  color: var(--fg); padding: 6px 10px; border-radius: 6px;
+  font-family: var(--mono); font-size: 12px; cursor: pointer;
+  transition: background .15s; display: flex; align-items: center; gap: 8px;
+}
+.theme-btn:hover { background: var(--bg-alt); }
+.post-hero { padding: 56px 0 36px; border-bottom: 1px solid var(--line); margin-bottom: 48px; }
+.post-tag { font-size: 11px; color: var(--hl); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; }
+.post-tag::before { content: "## "; }
+.post-title { font-size: clamp(24px, 4vw, 40px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 20px; }
+.post-meta { display: flex; gap: 20px; font-size: 12px; color: var(--fg-muted); flex-wrap: wrap; }
+.post-meta span::before { content: "// "; color: var(--hl); }
+.post-body { padding-bottom: 100px; }
+.post-body p { font-size: 13.5px; line-height: 1.9; color: var(--fg-soft); margin-bottom: 20px; }
+.post-body p strong { color: var(--fg); font-weight: 600; }
+.post-body p em { color: var(--fg); font-style: italic; }
+.post-body h2 { font-size: 13px; font-weight: 600; color: var(--fg); margin: 40px 0 14px; letter-spacing: 0.02em; }
+.post-body h2::before { content: "## "; color: var(--hl); }
+.post-body ul { list-style: none; margin: 0 0 20px; padding: 0; }
+.post-body li { font-size: 13px; line-height: 1.75; color: var(--fg-soft); padding: 6px 0 6px 22px; position: relative; border-bottom: 1px dotted var(--line); }
+.post-body li:last-child { border-bottom: none; }
+.post-body li::before { content: "▸"; position: absolute; left: 0; color: var(--hl); }
+.post-body li strong { color: var(--fg); }
+.codeblock { background: var(--bg-soft); border: 1px solid var(--line); border-radius: 8px; padding: 16px 20px; margin: 20px 0; font-size: 12.5px; color: var(--fg-soft); overflow-x: auto; white-space: pre; }
+.codeblock .c { color: var(--fg-muted); }
+.codeblock .k { color: var(--hl); }
+.callout { border-left: 2px solid var(--hl); padding: 14px 18px; background: var(--bg-soft); border-radius: 0 8px 8px 0; margin: 24px 0; }
+.callout p { margin: 0; color: var(--fg-soft); font-size: 13px; }
+.callout p strong { color: var(--fg); }
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 28px 0; }
+.stat-card { background: var(--bg-soft); border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 4px; }
+.stat-card .num { font-size: 22px; font-weight: 700; color: var(--hl); letter-spacing: -0.02em; }
+.stat-card .label { font-size: 11px; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.paper-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 40px; padding: 12px 20px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg-soft); font-size: 13px; color: var(--fg-soft); transition: border-color .2s, color .2s; }
+.paper-link:hover { border-color: var(--hl); color: var(--hl); }
+footer { border-top: 1px solid var(--line); padding: 20px 40px; display: flex; justify-content: space-between; font-size: 11.5px; color: var(--fg-muted); max-width: 720px; margin: 0 auto; }
+@media (max-width: 760px) {
+  .wrap, .topbar-in, footer { padding-left: 20px; padding-right: 20px; }
+  .stat-row { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="back-btn" href="../index.html">← cd ..</a>
+    <span class="topbar-path">~/jw3/posts/<b>communication-drift</b></span>
+    <button class="theme-btn" id="themeBtn"><span id="themeIcon">☾</span><span id="themeLabel">dark</span></button>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="post-hero">
+      <div class="post-tag">nlp</div>
+      <h1 class="post-title">Communication drift — catching AI-generated phishing without URL filters</h1>
+      <div class="post-meta">
+        <span>2026.02.03</span>
+        <span>12 min read</span>
+        <span>James Wilson III · Nancy Martinez</span>
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      <p>Eighty-three percent of phishing emails are now AI-generated. That number, from a 2024 industry report, is alarming not just for its size but for what it implies: the attacker's biggest bottleneck — writing a convincing email that sounds like your CFO — has effectively been removed. GPT-4o-class models can impersonate writing style well enough to fool people who know the sender.</p>
+
+      <p>The defenses haven't kept up. SPF, DKIM, DMARC — header-based authentication tells you the email came from where it claims to come from, not whether the person who sent it actually wrote it. URL reputation filters miss spear-phish that use clean domains. Keyword-based classifiers are blind to stylistically correct text that happens to ask for a wire transfer.</p>
+
+      <p>Our research explored a different angle: <strong>what if you could flag an email because it doesn't sound like the person it claims to be from?</strong> Stylometry — the statistical analysis of writing style — is the underlying tool. The specific implementation is what we called a DriftScore: a per-sender measure of how far an incoming email deviates from that sender's historical writing baseline.</p>
+
+      <h2>The dataset and setup</h2>
+
+      <p>We used the Enron Corporate Email corpus — real organizational emails from 1999–2003, which gives us genuine corporate communication patterns with enough per-sender volume to build meaningful baselines. After preprocessing and sender normalization, we retained 11,106 legitimate emails and generated 1,128 synthetic anomalous emails using GPT-4o-mini, prompted to produce phishing-style content while preserving each sender's writing profile.</p>
+
+      <p>The synthetic generation pipeline was intentionally "defanged" — real phishing content wasn't produced, just structurally anomalous emails that preserved sender style at the macro level while introducing suspicious cues (urgency, financial action language, unusual requests). The goal was to simulate what a sophisticated AI phishing tool would actually produce: something that mostly sounds like you, but is slightly off.</p>
+
+      <h2>What we measured</h2>
+
+      <p>Each email was converted into a stylometric feature vector covering:</p>
+
+      <ul>
+        <li><strong>Global writing attributes:</strong> word count, sentence length, type-token ratio, average word length, character count</li>
+        <li><strong>Behavioral indicators:</strong> punctuation density, modal verb counts, urgency cues, financial action cues, imperative verb counts, greeting/sign-off presence</li>
+        <li><strong>Sender-relative deltas:</strong> difference in word count vs sender average, deviation in sentence length, punctuation density delta, vocabulary overlap with sender's high-frequency words</li>
+      </ul>
+
+      <p>The sender-relative features are the core insight. A short email isn't suspicious in isolation — but a short email from someone who always writes long emails is. The DriftScore operationalizes this:</p>
+
+      <div class="codeblock"><span class="c"># DriftScore: normalized deviation from sender baseline</span>
+DriftScore = (1/k) · Σ |x_i - μ_i| / (σ_i + ε)
+
+<span class="c"># where:</span>
+<span class="c"># x_i   = feature value for the incoming email</span>
+<span class="c"># μ_i   = sender's mean for that feature (from training emails)</span>
+<span class="c"># σ_i   = sender's std dev for that feature</span>
+<span class="c"># k     = number of features</span>
+<span class="c"># ε     = small constant for numerical stability</span></div>
+
+      <p>Higher score = the email is more stylistically unusual relative to this specific sender's history. The threshold is tuned per-sender using a validation set, which means the system automatically calibrates to individual writing variability — a high-variance writer gets a more relaxed threshold than someone who writes very consistently.</p>
+
+      <h2>What experiment 1 showed</h2>
+
+      <p>The supervised classification experiment — where both legitimate and synthetic anomalous emails are labeled and available at training time — demonstrated that the feature space carries real discriminatory signal:</p>
+
+      <div class="stat-row">
+        <div class="stat-card"><div class="num">93.9%</div><div class="label">Random Forest accuracy</div></div>
+        <div class="stat-card"><div class="num">0.985</div><div class="label">ROC-AUC</div></div>
+        <div class="stat-card"><div class="num">87.1%</div><div class="label">Logistic Regression accuracy</div></div>
+      </div>
+
+      <p>These numbers are strong, but they represent an upper bound — the easy case where you know what anomalous emails look like during training. Experiment 2 is the realistic case.</p>
+
+      <h2>What experiment 2 actually showed</h2>
+
+      <p>Sender-specific anomaly detection — building a baseline from each sender's legitimate emails only, then scoring incoming mail against it — is genuinely hard. Isolation Forest achieved precision 0.24, recall 0.74, F1 0.36. One-Class SVM was similar. The DriftScore alone as a threshold produced nearly identical numbers.</p>
+
+      <div class="callout">
+        <p><strong>This isn't a failure of the approach — it's an honest characterization of the problem.</strong> AI-generated phishing that is specifically designed to match a sender's writing style will, by construction, have a low drift score. The signal exists, but it's not strong enough to be a standalone classifier in the adversarial case.</p>
+      </div>
+
+      <p>Where it gets more useful: the two-stage warning system. An email only triggers a warning when it exceeds the sender-specific DriftScore threshold <em>and</em> contains at least one supporting suspicious cue (urgency language, financial action phrasing, unusual imperative verbs, low content-word overlap). This reduces false positives without collapsing recall entirely.</p>
+
+      <p>In strict mode — requiring both anomaly model and DriftScore to fire, plus one supporting cue — precision rose to 0.28 with recall at 0.49. That's not high enough to replace existing defenses, but it's a meaningful secondary signal, especially for high-value targets like executives where even a low-precision warning is worth surfacing.</p>
+
+      <h2>The honest takeaway</h2>
+
+      <p>Stylometry as a standalone phishing detector isn't there yet, at least not against attackers who know they need to match the target sender's style. But as a <strong>complementary behavioral layer</strong> — one more signal in a defense-in-depth stack — it has real value. The DriftScore is particularly useful because it gets harder to evade as the legitimate sender's corpus grows. The attacker needs to match not just average style, but the full statistical distribution of that sender's writing habits across hundreds of emails. That's a nontrivial constraint.</p>
+
+      <p>Future work worth doing: richer stylometric representations (syntactic parse features, discourse structure), larger real-world phishing corpora for validation, and per-sender threshold tuning at scale. The current proof-of-concept is limited by dataset size and by the fact that our synthetic anomalies were generated by a model being asked to <em>slightly</em> deviate — a more adversarial generation approach would be a harder test.</p>
+
+      <a class="paper-link" href="../papers/Detecting_AI_Generated_Phishing_Through_Sender_Style_Communication_Drift.pdf" target="_blank" rel="noopener">↓ read the full paper · PDF</a>
+
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div>© 2026 james wilson iii</div>
+  <div><a href="../index.html#writing" style="color:var(--fg-muted);">← back to writing</a></div>
+</footer>
+
+<script>
+const themeBtn = document.getElementById('themeBtn');
+const themeIcon = document.getElementById('themeIcon');
+const themeLabel = document.getElementById('themeLabel');
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  themeIcon.textContent = t === 'dark' ? '☾' : '☀';
+  themeLabel.textContent = t;
+  try { localStorage.setItem('jw3-term-theme', t); } catch(e) {}
+}
+try { const s = localStorage.getItem('jw3-term-theme'); if (s) setTheme(s); } catch(e) {}
+themeBtn.addEventListener('click', () => {
+  setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+</script>
+</body>
+</html>

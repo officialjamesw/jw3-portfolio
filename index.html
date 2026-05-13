@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>jw3 — ~/portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0c0d;
+  --bg-alt: #131316;
+  --bg-soft: #18181c;
+  --fg: #ededee;
+  --fg-soft: #a1a1a8;
+  --fg-muted: #5a5a62;
+  --fg-dim: #383840;
+  --line: #232328;
+  --accent: #ededee;
+  --hl: #f4ce6b;
+  --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+[data-theme="light"] {
+  --bg: #fafaf8;
+  --bg-alt: #f0f0ec;
+  --bg-soft: #f5f5f1;
+  --fg: #111113;
+  --fg-soft: #4a4a52;
+  --fg-muted: #888890;
+  --fg-dim: #cdcdc8;
+  --line: #d8d8d2;
+  --accent: #111113;
+  --hl: #b1850b;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  transition: background .35s ease, color .35s ease;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 40px; }
+
+/* ── Header ── */
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  background: color-mix(in oklab, var(--bg) 90%, transparent);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.topbar-in {
+  max-width: 1080px; margin: 0 auto;
+  padding: 14px 40px;
+  display: flex; align-items: center; gap: 22px;
+}
+.brand {
+  font-weight: 600; font-size: 13.5px; color: var(--fg);
+  display: flex; align-items: center; gap: 10px;
+}
+.brand .dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #22c55e; box-shadow: 0 0 8px #22c55e80;
+}
+.brand .path { color: var(--fg-muted); }
+.brand .path b { color: var(--fg); font-weight: 600; }
+.brand .caret { animation: blink 1.1s steps(2) infinite; color: var(--fg); }
+@keyframes blink { 50% { opacity: 0; } }
+.nav { margin-left: auto; display: flex; gap: 4px; }
+.nav a {
+  font-size: 12.5px; color: var(--fg-soft);
+  padding: 7px 12px; border-radius: 6px;
+  transition: color .15s, background .15s;
+}
+.nav a:hover { color: var(--fg); background: var(--bg-alt); }
+.nav a::before { content: ""; }
+.theme-btn {
+  background: transparent; border: 1px solid var(--line);
+  color: var(--fg); padding: 6px 10px; border-radius: 6px;
+  font-family: var(--mono); font-size: 12px; cursor: pointer;
+  transition: background .15s, border-color .15s;
+  display: flex; align-items: center; gap: 8px;
+}
+.theme-btn:hover { background: var(--bg-alt); }
+
+/* ── Hero ── */
+.hero { padding: 64px 0 32px; }
+.term-card {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg-soft);
+  overflow: hidden;
+}
+.term-head {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11.5px; color: var(--fg-muted);
+}
+.term-head .dots { display: flex; gap: 6px; margin-right: 6px; }
+.term-head .dots span {
+  width: 11px; height: 11px; border-radius: 50%;
+  background: var(--fg-dim);
+}
+.term-head .dots span:nth-child(1) { background: #ff5f57; }
+.term-head .dots span:nth-child(2) { background: #febc2e; }
+.term-head .dots span:nth-child(3) { background: #28c840; }
+.term-head .tab {
+  margin-left: 12px; padding: 4px 10px; border-radius: 5px;
+  background: var(--bg); color: var(--fg-soft);
+  border: 1px solid var(--line);
+}
+.term-body { padding: 28px 32px; font-size: 13.5px; line-height: 1.75; }
+.line { display: flex; gap: 12px; }
+.line .prompt { color: var(--hl); user-select: none; flex-shrink: 0; }
+.line .cmd { color: var(--fg); }
+.line .out { color: var(--fg-soft); padding-left: 26px; }
+.comment { color: var(--fg-muted); }
+
+.hero-name {
+  font-size: clamp(40px, 6.5vw, 76px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  margin: 28px 0 6px;
+}
+.hero-name .punct { color: var(--fg-muted); font-weight: 300; }
+.hero-role {
+  color: var(--fg-soft); font-size: 14px;
+  margin-bottom: 24px;
+}
+.hero-role b { color: var(--hl); font-weight: 500; }
+
+.kvgrid {
+  display: grid; grid-template-columns: 120px 1fr;
+  gap: 4px 24px;
+  margin-top: 18px;
+}
+.kvgrid .k { color: var(--fg-muted); font-size: 12.5px; }
+.kvgrid .v { color: var(--fg); font-size: 12.5px; }
+.kvgrid .v.dim { color: var(--fg-soft); }
+.kvgrid .v.ok::before { content: "● "; color: #22c55e; }
+
+/* ── Section header ── */
+.sec { padding: 70px 0; }
+.sec-head {
+  display: flex; align-items: baseline; gap: 14px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 14px;
+}
+.sec-head .h {
+  color: var(--fg); font-size: 13px; font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.sec-head .h::before { content: "## "; color: var(--hl); }
+.sec-head .id { color: var(--fg-muted); font-size: 12px; margin-left: auto; }
+
+/* ── About ── */
+.about-cols {
+  display: grid; grid-template-columns: 1.4fr 1fr;
+  gap: 56px; align-items: start;
+}
+.about-cols p {
+  font-size: 13.5px; line-height: 1.85; color: var(--fg-soft);
+  margin-bottom: 16px;
+}
+.about-cols p b { color: var(--fg); font-weight: 500; }
+.about-cols p .hl { color: var(--hl); }
+.aside {
+  border: 1px solid var(--line); border-radius: 8px;
+  background: var(--bg-soft);
+  padding: 18px 22px;
+}
+.aside h4 {
+  font-size: 11.5px; color: var(--fg-muted); font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.aside ul { list-style: none; }
+.aside li {
+  font-size: 12.5px; padding: 5px 0;
+  border-bottom: 1px dotted var(--line);
+  display: flex; justify-content: space-between;
+  color: var(--fg-soft);
+}
+.aside li:last-child { border-bottom: none; }
+.aside li span:last-child { color: var(--fg); }
+
+/* ── Scrapbook (image cards, terminal-style) ── */
+.scrap-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+.img-card {
+  border: 1px solid var(--line); border-radius: 10px;
+  background: var(--bg-soft);
+  overflow: hidden;
+  transition: border-color .25s, transform .25s, box-shadow .25s;
+}
+.img-card:hover {
+  border-color: var(--fg-soft);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+}
+.img-card-head {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono); font-size: 11px;
+  display: flex; justify-content: space-between; align-items: center;
+  color: var(--fg-muted);
+}
+.img-card-head .name { color: var(--fg); }
+.img-card-head .name::before { content: "● "; color: var(--hl); }
+.img-card-frame {
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.img-card img { width: 100%; display: block; }
+.img-card-foot {
+  padding: 10px 14px;
+  border-top: 1px solid var(--line);
+  font-family: var(--mono); font-size: 11.5px;
+  color: var(--fg-soft);
+  background: var(--bg);
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12px;
+}
+.img-card-foot .tag {
+  font-size: 10.5px; color: var(--fg-muted);
+  padding: 2px 8px; border: 1px solid var(--line); border-radius: 4px;
+}
+
+/* ── Projects ── */
+.projs {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.proj {
+  border: 1px solid var(--line); border-radius: 10px;
+  background: var(--bg-soft);
+  padding: 22px;
+  cursor: pointer;
+  transition: border-color .2s, transform .2s, background .2s;
+  position: relative;
+  display: flex; flex-direction: column; gap: 12px;
+  min-height: 240px;
+}
+.proj:hover {
+  border-color: var(--fg-soft);
+  background: var(--bg-alt);
+  transform: translateY(-2px);
+}
+.proj-head {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 11.5px; color: var(--fg-muted);
+}
+.proj-head .num::before { content: "#"; color: var(--hl); }
+.proj-head .status {
+  padding: 3px 8px; border-radius: 999px;
+  background: var(--bg); border: 1px solid var(--line);
+}
+.proj-head .status.live::before { content: "● "; color: #22c55e; }
+.proj-head .status.research::before { content: "● "; color: var(--hl); }
+.proj-name {
+  font-size: 17px; font-weight: 600; line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+.proj-desc { font-size: 12.5px; line-height: 1.65; color: var(--fg-soft); }
+.proj-foot {
+  margin-top: auto;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 11.5px; color: var(--fg-muted);
+}
+.proj-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.tag {
+  padding: 2px 8px; border-radius: 4px;
+  background: var(--bg); border: 1px solid var(--line);
+  font-size: 10.5px; color: var(--fg-soft);
+}
+.proj-go { color: var(--fg); transition: transform .25s; }
+.proj:hover .proj-go { transform: translateX(4px); color: var(--hl); }
+.proj-pdf {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 10.5px; color: var(--fg-muted);
+  padding: 3px 8px; border-radius: 4px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  transition: border-color .15s, color .15s;
+  z-index: 2; position: relative;
+}
+.proj-pdf:hover { border-color: var(--hl); color: var(--hl); }
+.detail-pdf-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-top: 24px;
+  padding: 10px 18px; border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--bg-soft);
+  font-family: var(--mono); font-size: 12.5px; color: var(--fg-soft);
+  transition: border-color .2s, color .2s, background .2s;
+}
+.detail-pdf-btn:hover { border-color: var(--hl); color: var(--hl); background: var(--bg-alt); }
+
+/* ── Writing ── */
+.writing-list { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.post {
+  display: grid; grid-template-columns: 110px 1fr auto;
+  gap: 20px; padding: 16px 22px;
+  font-size: 13px;
+  border-top: 1px solid var(--line);
+  transition: background .15s;
+  align-items: center;
+}
+.post:first-child { border-top: none; }
+.post:hover { background: var(--bg-alt); }
+.post .date { color: var(--fg-muted); font-size: 12px; }
+.post .t { color: var(--fg); font-weight: 500; }
+.post .meta {
+  color: var(--fg-muted); font-size: 11.5px;
+  display: flex; gap: 12px;
+}
+
+/* ── Resume ── */
+.role {
+  display: grid; grid-template-columns: 140px 1fr;
+  gap: 30px; padding: 20px 0;
+  border-top: 1px solid var(--line);
+}
+.role:first-child { border-top: none; }
+.role-period { color: var(--fg-muted); font-size: 12.5px; line-height: 1.6; }
+.role-co {
+  font-size: 14px; font-weight: 600; color: var(--fg);
+  margin-bottom: 2px;
+}
+.role-title { font-size: 12.5px; color: var(--hl); margin-bottom: 10px; }
+.role-body { font-size: 13px; line-height: 1.7; color: var(--fg-soft); max-width: 640px; }
+
+/* ── Contact ── */
+.contact { padding: 70px 0 90px; }
+.contact-card {
+  border: 1px solid var(--line); border-radius: 12px;
+  background: var(--bg-soft);
+  padding: 36px;
+}
+.contact-h {
+  font-size: 28px; font-weight: 600; letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+.contact-h .punct { color: var(--hl); }
+.contact-sub { color: var(--fg-soft); font-size: 13px; margin-bottom: 28px; }
+.contact-links { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.contact-link {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 18px;
+  border: 1px solid var(--line); border-radius: 8px;
+  background: var(--bg);
+  transition: border-color .2s, background .2s, transform .2s;
+  font-size: 13px;
+}
+.contact-link:hover {
+  border-color: var(--hl); transform: translateY(-2px);
+}
+.contact-link .l-k { color: var(--fg-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; }
+.contact-link .l-v { color: var(--fg); font-size: 13px; }
+.contact-link .arrow { color: var(--fg-muted); transition: color .15s, transform .25s; }
+.contact-link:hover .arrow { color: var(--hl); transform: translate(2px, -2px); }
+
+/* ── Footer ── */
+footer {
+  border-top: 1px solid var(--line);
+  padding: 20px 40px;
+  display: flex; justify-content: space-between;
+  font-size: 11.5px; color: var(--fg-muted);
+  max-width: 1080px; margin: 0 auto;
+}
+
+/* ── Detail overlay ── */
+.detail {
+  position: fixed; inset: 0; z-index: 100; background: var(--bg);
+  overflow-y: auto;
+  opacity: 0; pointer-events: none;
+  transform: translateY(16px);
+  transition: opacity .28s ease, transform .28s ease;
+}
+.detail.open { opacity: 1; pointer-events: auto; transform: none; }
+.detail-in { max-width: 920px; margin: 0 auto; padding: 40px 40px 100px; }
+.detail-close {
+  font-family: var(--mono); font-size: 12px; color: var(--fg-soft);
+  background: none; border: 1px solid var(--line);
+  padding: 7px 14px; border-radius: 6px; cursor: pointer;
+  margin-bottom: 36px;
+  transition: border-color .2s, background .2s;
+}
+.detail-close:hover { background: var(--bg-alt); border-color: var(--fg-soft); }
+.detail-id { color: var(--fg-muted); font-size: 12px; margin-bottom: 12px; }
+.detail-id::before { content: "#"; color: var(--hl); }
+.detail-title {
+  font-size: clamp(28px, 4.2vw, 48px); font-weight: 700;
+  letter-spacing: -0.03em; line-height: 1.1;
+  margin-bottom: 28px;
+}
+.detail-meta {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+  padding: 18px; margin-bottom: 36px;
+  border: 1px solid var(--line); border-radius: 8px;
+  background: var(--bg-soft);
+}
+.detail-meta dt { font-size: 11px; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+.detail-meta dd { font-size: 13px; color: var(--fg); }
+.detail-body { font-size: 14px; line-height: 1.75; color: var(--fg-soft); }
+.detail-body h3 {
+  font-size: 13px; color: var(--fg); font-weight: 600;
+  margin-top: 28px; margin-bottom: 10px;
+}
+.detail-body h3::before { content: "## "; color: var(--hl); }
+.detail-body p { margin-bottom: 14px; }
+.detail-body p strong { color: var(--fg); }
+.detail-body ul { padding-left: 0; list-style: none; margin: 10px 0; }
+.detail-body li { padding-left: 22px; position: relative; margin-bottom: 6px; }
+.detail-body li::before { content: "▸"; position: absolute; left: 0; color: var(--hl); }
+.codeblock {
+  background: var(--bg-soft); border: 1px solid var(--line);
+  border-radius: 8px; padding: 16px 18px; margin: 16px 0;
+  font-size: 12.5px; color: var(--fg-soft);
+  white-space: pre; overflow-x: auto;
+}
+.codeblock .c { color: var(--fg-muted); }
+.codeblock .k { color: var(--hl); }
+
+/* placeholder figure */
+.figure {
+  margin: 20px 0;
+  height: 260px;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  background:
+    repeating-linear-gradient(45deg, transparent 0 16px, color-mix(in oklab, var(--fg) 4%, transparent) 16px 17px);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11.5px; color: var(--fg-muted);
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+
+/* reveal */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
+.reveal.in { opacity: 1; transform: none; }
+
+@media (max-width: 760px) {
+  .wrap, .topbar-in, footer { padding-left: 20px; padding-right: 20px; }
+  .nav { display: none; }
+  .about-cols, .projs, .contact-links, .scrap-grid { grid-template-columns: 1fr; }
+  .role { grid-template-columns: 1fr; gap: 6px; }
+  .post { grid-template-columns: 1fr; gap: 4px; }
+}
+</style>
+</head>
+<body data-screen-label="Terminal">
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <span class="dot"></span>
+      <span class="path">~/<b>jw3</b>/portfolio</span>
+      <span class="caret">▍</span>
+    </div>
+    <nav class="nav">
+      <a href="#about">about</a>
+      <a href="#work">work</a>
+      <a href="#writing">writing</a>
+      <a href="#resume">resume</a>
+      <a href="#contact">contact</a>
+    </nav>
+    <button class="theme-btn" id="themeBtn">
+      <span id="themeIcon">☾</span><span id="themeLabel">dark</span>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="wrap">
+      <div class="term-card reveal in">
+        <div class="term-head">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <div class="tab">~/jw3 — zsh — 96×24</div>
+        </div>
+        <div class="term-body">
+          <div class="line"><span class="prompt">$</span><span class="cmd">whoami --verbose</span></div>
+          <h1 class="hero-name">james wilson<span class="punct"> // </span>iii</h1>
+          <p class="hero-role">cybersecurity intern @ <b>NYC School Construction Authority</b> · M.S. cybersecurity, Fordham '25</p>
+
+          <div class="kvgrid">
+            <div class="k">location</div><div class="v">Brooklyn, NY</div>
+            <div class="k">status</div><div class="v ok">open to full-time roles</div>
+            <div class="k">focus</div><div class="v dim">adversarial ML · network defense · agent security</div>
+            <div class="k">last_updated</div><div class="v dim">2026-05-13</div>
+          </div>
+
+          <div class="line" style="margin-top: 22px;"><span class="prompt">$</span><span class="cmd comment"># scroll for project index, writing, and resume</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="about">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="h">about</div>
+        <div class="id">01 // README.md</div>
+      </div>
+      <div class="about-cols reveal">
+        <div>
+          <p>
+            I came up through <b>Computer Science &amp; Mathematics at St. Joseph's University</b> in
+            Brooklyn — the math half is still where most of my best instincts come from.
+          </p>
+          <p>
+            Graduate work at Fordham pulled me toward <span class="hl">adversarial ML and applied
+            cryptography</span>. Most of what I build now lives at that seam: detecting attacks,
+            hardening pipelines, and writing the audit trail that lets a system answer for itself.
+          </p>
+          <p>
+            Off-hours I tinker with my home-lab, run Linux a little too aggressively, watch
+            anime and a lot of film, and walk the Brooklyn Botanic on weekends.
+          </p>
+        </div>
+        <div class="aside">
+          <h4>// currently</h4>
+          <ul>
+            <li><span>reading</span><span>Crypto Eng.</span></li>
+            <li><span>listening</span><span>hip-hop</span></li>
+            <li><span>building</span><span>agent middleware</span></li>
+            <li><span>watching</span><span>Vinland Saga S3</span></li>
+            <li><span>distro</span><span>Arch (btw)</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ── scrapbook strip ── -->
+      <div class="line reveal" style="margin: 56px 0 18px; padding-bottom: 14px; border-bottom: 1px solid var(--line); color: var(--fg-muted); font-size: 12.5px;">
+        <span class="prompt" style="color: var(--hl);">$</span>
+        <span>ls ~/scrapbook/ <span style="color: var(--fg-dim);">--recent</span></span>
+      </div>
+      <div class="scrap-grid reveal">
+        <figure class="img-card" style="margin: 0;">
+          <div class="img-card-head">
+            <span class="name">arashiyama.jpg</span>
+            <span>788 × 1400</span>
+          </div>
+          <div class="img-card-frame">
+            <img src="assets/japan-arashiyama.png" alt="James in Arashiyama, Kyoto, summer 2024" loading="lazy">
+          </div>
+          <figcaption class="img-card-foot">
+            <span>// arashiyama, kyoto — fordham travel-study, '24</span>
+            <span class="tag">JPG</span>
+          </figcaption>
+        </figure>
+        <figure class="img-card" style="margin: 0;">
+          <div class="img-card-head">
+            <span class="name">subway_home.jpg</span>
+            <span>1600 × 1200</span>
+          </div>
+          <div class="img-card-frame">
+            <img src="assets/subway-comiccon.png" alt="James on the subway home from NY Comic Con" loading="lazy">
+          </div>
+          <figcaption class="img-card-foot">
+            <span>// q train, post-NYCC. peak brooklyn.</span>
+            <span class="tag">JPG</span>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="work">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="h">work</div>
+        <div class="id">02 // projects/</div>
+      </div>
+      <div class="projs reveal">
+
+        <article class="proj" data-proj="adversarial">
+          <div class="proj-head">
+            <span class="num">001</span>
+            <span class="status research">research</span>
+          </div>
+          <div class="proj-name">Adversarial Detection for Video-Based Face Recognition</div>
+          <div class="proj-desc">Dual-detector framework — temporal drift + ensemble disagreement — catches ATN, PGD &amp; FGSM attacks on FR systems with 89.3% accuracy.</div>
+          <div class="proj-foot">
+            <div class="proj-tags"><span class="tag">pytorch</span><span class="tag">u-net</span><span class="tag">sklearn</span></div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <a class="proj-pdf" href="papers/Adversarial_Face_Recognition__Detection_Framework_for_Video_Based_Attack_Sequences.pdf" target="_blank" rel="noopener" onclick="event.stopPropagation()">↓ paper</a>
+              <span class="proj-go">→</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="proj" data-proj="middleware">
+          <div class="proj-head">
+            <span class="num">002</span>
+            <span class="status live">prototype</span>
+          </div>
+          <div class="proj-name">Secure AI Agent Middleware</div>
+          <div class="proj-desc">Runtime security layer for agentic LLMs — normalization, policy, contagion detection. Drops attack success rate to 0% across a 12-vector suite.</div>
+          <div class="proj-foot">
+            <div class="proj-tags"><span class="tag">python</span><span class="tag">llm-sec</span><span class="tag">html5lib</span></div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <a class="proj-pdf" href="papers/Technology_Review_Secure_AI_Paper.pdf" target="_blank" rel="noopener" onclick="event.stopPropagation()">↓ paper</a>
+              <span class="proj-go">→</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="proj" data-proj="phishing">
+          <div class="proj-head">
+            <span class="num">003</span>
+            <span class="status">complete</span>
+          </div>
+          <div class="proj-name">AI-Phishing Detection via Communication Drift</div>
+          <div class="proj-desc">Per-sender stylometric profiles + DriftScore flag impersonation emails that header and URL filters can't see.</div>
+          <div class="proj-foot">
+            <div class="proj-tags"><span class="tag">sklearn</span><span class="tag">stylometry</span><span class="tag">nlp</span></div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <a class="proj-pdf" href="papers/Detecting_AI_Generated_Phishing_Through_Sender_Style_Communication_Drift.pdf" target="_blank" rel="noopener" onclick="event.stopPropagation()">↓ paper</a>
+              <span class="proj-go">→</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="proj" style="border-style: dashed; cursor: default; align-items: center; justify-content: center; text-align: center;">
+          <div></div>
+          <div class="proj-name" style="color: var(--fg-muted); font-size: 14px; font-weight: 400;">+ next project<br><span style="font-size: 11.5px; color: var(--fg-dim);">// coming soon</span></div>
+          <div></div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="writing">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="h">writing</div>
+        <div class="id">03 // posts/</div>
+      </div>
+      <div class="writing-list reveal">
+        <a class="post" href="posts/temporal-drift.html">
+          <span class="date">2026.04.18</span>
+          <span class="t">Why temporal drift is the cheapest signal in video face-recognition defense</span>
+          <span class="meta"><span>9 min</span><span>adv-ml</span></span>
+        </a>
+        <a class="post" href="posts/communication-drift.html">
+          <span class="date">2026.02.03</span>
+          <span class="t">Communication drift &mdash; catching AI-generated phishing without URL filters</span>
+          <span class="meta"><span>12 min</span><span>nlp</span></span>
+        </a>
+        <a class="post" href="posts/agent-security.html">
+          <span class="date">2025.11.21</span>
+          <span class="t">Agent security is a system problem, not a prompt problem</span>
+          <span class="meta"><span>7 min</span><span>llm-sec</span></span>
+        </a>
+        <a class="post" href="posts/home-lab.html">
+          <span class="date">2025.09.06</span>
+          <span class="t">On building a home-lab that survives my own changes</span>
+          <span class="meta"><span>5 min</span><span>infra</span></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="resume">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="h">resume</div>
+        <div class="id">04 // experience.log</div>
+      </div>
+      <div class="reveal">
+        <div class="role">
+          <div class="role-period">2025 → present</div>
+          <div>
+            <div class="role-co">NYC School Construction Authority</div>
+            <div class="role-title">cybersecurity intern</div>
+            <div class="role-body">Vulnerability triage, internal tooling, and policy work for a network supporting every public-school construction project in the city. Lots of practical incident-response and threat-hunting reps.</div>
+          </div>
+        </div>
+        <div class="role">
+          <div class="role-period">2023 — 2025</div>
+          <div>
+            <div class="role-co">Fordham University</div>
+            <div class="role-title">M.S., cybersecurity</div>
+            <div class="role-body">Graduate work in adversarial ML, applied cryptography, and network defense. Thesis-adjacent research on face-recognition robustness.</div>
+          </div>
+        </div>
+        <div class="role">
+          <div class="role-period">2019 — 2023</div>
+          <div>
+            <div class="role-co">St. Joseph's University, Brooklyn</div>
+            <div class="role-title">B.S., computer science &amp; mathematics</div>
+            <div class="role-body">Dual major foundation in algorithms, probability, and systems. The math discipline still shows up in everything I do.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="h">contact</div>
+        <div class="id">05 // reachable.json</div>
+      </div>
+      <div class="contact-card reveal">
+        <div class="contact-h">say hi<span class="punct">.</span></div>
+        <div class="contact-sub">// open to full-time security &amp; ML-engineering roles starting summer 2026</div>
+        <div class="contact-links">
+          <a class="contact-link" href="mailto:officialjamesw3@gmail.com">
+            <div>
+              <div class="l-k">email</div>
+              <div class="l-v">officialjamesw3@gmail.com</div>
+            </div>
+            <span class="arrow">↗</span>
+          </a>
+          <a class="contact-link" href="https://www.linkedin.com/in/james-wilson-iii/" target="_blank" rel="noopener">
+            <div>
+              <div class="l-k">linkedin</div>
+              <div class="l-v">/in/james-wilson-iii</div>
+            </div>
+            <span class="arrow">↗</span>
+          </a>
+          <a class="contact-link" href="https://github.com/officialjamesw" target="_blank" rel="noopener">
+            <div>
+              <div class="l-k">github</div>
+              <div class="l-v">officialjamesw</div>
+            </div>
+            <span class="arrow">↗</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div>© 2026 james wilson iii · built in vim, more or less</div>
+    <div>JetBrains Mono · v1.0.0</div>
+  </footer>
+</main>
+
+<div class="detail" id="detail">
+  <div class="detail-in">
+    <button class="detail-close" id="detailClose">← cd ..</button>
+    <div class="detail-id" id="dId">001</div>
+    <h1 class="detail-title" id="dTitle"></h1>
+    <dl class="detail-meta" id="dMeta"></dl>
+    <div class="detail-body" id="dBody"></div>
+  </div>
+</div>
+
+<script>
+const themeBtn = document.getElementById('themeBtn');
+const themeIcon = document.getElementById('themeIcon');
+const themeLabel = document.getElementById('themeLabel');
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  themeIcon.textContent = t === 'dark' ? '☾' : '☀';
+  themeLabel.textContent = t;
+  try { localStorage.setItem('jw3-term-theme', t); } catch(e) {}
+}
+try {
+  const s = localStorage.getItem('jw3-term-theme');
+  if (s) setTheme(s);
+} catch(e) {}
+themeBtn.addEventListener('click', () => {
+  const cur = document.documentElement.getAttribute('data-theme');
+  setTheme(cur === 'dark' ? 'light' : 'dark');
+});
+
+const io = new IntersectionObserver((es) => {
+  es.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+const projects = {
+  adversarial: {
+    id: '001 // adversarial-fr-detect',
+    title: 'Adversarial Detection for Video-Based Face Recognition',
+    meta: { role: 'lead researcher', year: '2025', stack: 'pytorch 2.1 · sklearn · rtx 4070', status: 'paper drafted' },
+    body: `
+      <p style="color: var(--fg-muted); font-size: 12.5px; margin-bottom: 18px;">Fordham CIS · advised by Dr. Thaier Hayajneh.</p>
+      <h3>problem</h3>
+      <p>Real-time adversarial attacks against face recognition (FR) — specifically <strong>Adversarial Transformation Networks (ATNs)</strong> like the ReFace framework — generate imperceptible perturbations in a single forward pass. Fast enough to bypass commercial face APIs (AWS Rekognition, Azure Face) in real time, dropping FR accuracy from 82% to 16.4%.</p>
+      <p>Most defenses focus on per-frame, image-level artifacts. They miss the temporal structure that video FR pipelines actually run on, and they don't generalize to attacks they weren't trained against.</p>
+      <h3>approach</h3>
+      <p>A <strong>dual-detector framework</strong> that fuses two orthogonal signals:</p>
+      <ul>
+        <li><strong>Temporal drift detection</strong> — benign sequences produce stable embeddings across frames; adversarial perturbations produce inconsistent temporal trajectories. Drift metrics need no gradient access and no assumptions about the attack.</li>
+        <li><strong>Ensemble disagreement</strong> — multiple FR backbones (ArcFace, FaceNet, CosFace, SphereFace) process the same input. Perturbed embeddings shift in divergent directions across architectures.</li>
+        <li><strong>Logistic-regression fusion</strong> — a small classifier learns the optimal threshold over both detectors' feature space.</li>
+      </ul>
+      <p>To stress-test the system, I also built a <strong>U-Net based ATN</strong> that produces temporally-consistent perturbations — a stronger attack than naïve per-frame methods.</p>
+      <div class="codeblock"><span class="c"># total loss for the U-Net ATN</span>
+L_total = L_adv + λ_img · L_img
+<span class="c"># dual-detector decision</span>
+score = LR.predict_proba([drift_feats, ensemble_feats])[:, 1]</div>
+      <h3>results</h3>
+      <ul>
+        <li><strong>89.3%</strong> detection accuracy on ATN-generated attacks.</li>
+        <li>Cross-attack generalization — <strong>90.0%</strong> on PGD, <strong>83.3%</strong> on FGSM (AUC 0.922) despite training only on ATN.</li>
+        <li><strong>88.7%</strong> specificity, <strong>90.0%</strong> sensitivity — balanced decision-making.</li>
+        <li>Temporal drift alone outperforms ensemble disagreement alone; fusion outperforms both.</li>
+      </ul>
+      <h3>takeaway</h3>
+      <p>For video FR, where the attacker has to remain consistent across frames, <strong>temporal coherence is the cheapest signal you can buy</strong>. Gradient-free, model-agnostic, and it generalizes across the attack families I tested.</p>
+      <a class="detail-pdf-btn" href="papers/Adversarial_Face_Recognition__Detection_Framework_for_Video_Based_Attack_Sequences.pdf" target="_blank" rel="noopener">↓ read the paper &nbsp;·&nbsp; PDF</a>
+    `
+  },
+  middleware: {
+    id: '002 // agent-middleware',
+    title: 'Secure AI Agent Middleware',
+    meta: { role: 'designer · prototyper', year: '2026', stack: 'python · bs4 · html5lib', status: 'design + prototype' },
+    body: `
+      <p style="color: var(--fg-muted); font-size: 12.5px; margin-bottom: 18px;">Technology review and system design for runtime AI-agent security.</p>
+      <h3>problem</h3>
+      <p>Agentic AI introduces a new class of risk — prompt injection, hybrid LLM attacks, and <strong>multi-agent contagion</strong>, where compromise of one agent cascades through shared memory, tool outputs, and intermediate plans.</p>
+      <p>Existing defenses fall short:</p>
+      <ul>
+        <li>Prompt-engineering reminders ("ignore previous instructions...") fail to adaptive attacks — overridden ~58% of the time across 35 tests in the literature.</li>
+        <li>Detection-only approaches (heuristics, LLM judges) carry high false-positive rates.</li>
+        <li>Model-level alignment (Constitutional AI) requires retraining and addresses behavior, not system-level abuse.</li>
+      </ul>
+      <h3>approach</h3>
+      <p>A runtime <strong>security middleware</strong> sitting between agents and the tools/data they touch. Three composable layers:</p>
+      <ul>
+        <li><strong>Content normalization</strong> — BeautifulSoup4 + html5lib strip executable elements (<code>&lt;script&gt;</code>, <code>&lt;iframe&gt;</code>), event handlers, and invisible text. Targets <em>LLM injection vectors specifically</em>, not just classic XSS.</li>
+        <li><strong>Pattern-based policy enforcement</strong> — runtime rules over inputs, tool calls, and outputs.</li>
+        <li><strong>Contagion detection layer</strong> — a novel signal flagging compromise propagating between agents through shared state.</li>
+      </ul>
+      <h3>evaluation</h3>
+      <p>Built a 12-vector attack suite mirroring the most common real-world threats from the literature — injection, hybrid, and multi-agent contagion variants.</p>
+      <ul>
+        <li>Baseline attack success rate matched literature (~58% for raw injection).</li>
+        <li>With middleware: attack success rate dropped to <strong>0%</strong> across all 12 tested scenarios.</li>
+        <li>Naïve keyword filters miss <strong>&gt;50%</strong> of the same attacks — particularly encoded, obfuscated, or newly-phrased variants.</li>
+      </ul>
+      <h3>takeaway</h3>
+      <p>Agent security has to shift from <em>"secure this prompt"</em> to <em>"secure this ecosystem"</em>. The middleware reframes the problem as a system-level concern — addressing tool misuse, shared memory, and inter-agent contagion that prompt- and model-level defenses simply can't see.</p>
+      <a class="detail-pdf-btn" href="papers/Technology_Review_Secure_AI_Paper.pdf" target="_blank" rel="noopener">↓ read the paper &nbsp;·&nbsp; PDF</a>
+    `
+  },
+  phishing: {
+    id: '003 // communication-drift',
+    title: 'AI-Phishing Detection via Communication Drift',
+    meta: { role: 'co-author', year: '2025', stack: 'python · sklearn · enron corpus', status: 'complete' },
+    body: `
+      <p style="color: var(--fg-muted); font-size: 12.5px; margin-bottom: 18px;">Detecting AI-generated phishing through sender-style communication drift.</p>
+      <h3>problem</h3>
+      <p>LLMs make near-perfect impersonation emails trivial. SPF / DKIM and URL reputation filters can't catch a well-formed spear-phish from a look-alike domain — and signature-based classifiers don't see <em>this email doesn't sound like the person it claims to be from</em>.</p>
+      <p>Stylometry — the statistical analysis of writing style — is a behavioral signal that survives where header-based defenses don't.</p>
+      <h3>approach</h3>
+      <p>Two experiments on the <strong>Enron Corporate Email corpus</strong>:</p>
+      <ul>
+        <li><strong>Experiment 1 — supervised classification.</strong> Per-sender balanced legitimate vs synthetic-anomalous emails. Validates that the stylometric feature set carries discriminatory signal.</li>
+        <li><strong>Experiment 2 — sender-specific anomaly detection.</strong> The realistic case: build a writing fingerprint from each sender's legitimate corpus, score new mail against their baseline with a <strong>DriftScore</strong>. Higher drift = email is stylistically off-pattern for this sender.</li>
+      </ul>
+      <p>Features include function-word ratios, punctuation rhythm, syntactic depth, and sender-relative deltas. Strict-mode threshold favors precision; lenient-mode favors recall.</p>
+      <h3>results</h3>
+      <ul>
+        <li><strong>Experiment 1:</strong> stylometric + sender-relative features are highly discriminative in a supervised setting — confirms the feature space has signal.</li>
+        <li><strong>Experiment 2:</strong> sender-specific anomaly detection is materially harder, as expected. DriftScore provides an effective <strong>secondary warning signal</strong> rather than a standalone classifier.</li>
+        <li>Tunable per-sender threshold — quiet on casual contacts, strict on execs and high-value targets.</li>
+      </ul>
+      <h3>takeaway</h3>
+      <p>Stylometry isn't a replacement for header- or URL-based defenses. It's a complementary <strong>behavioral layer</strong> — a small, hard-to-spoof signal that gets harder for the attacker as the legitimate sender's corpus grows. Useful precisely where AI-generated phishing is hardest to catch.</p>
+      <a class="detail-pdf-btn" href="papers/Detecting_AI_Generated_Phishing_Through_Sender_Style_Communication_Drift.pdf" target="_blank" rel="noopener">↓ read the paper &nbsp;·&nbsp; PDF</a>
+    `
+  }
+};
+
+const detail = document.getElementById('detail');
+const dId = document.getElementById('dId');
+const dTitle = document.getElementById('dTitle');
+const dMeta = document.getElementById('dMeta');
+const dBody = document.getElementById('dBody');
+
+function openProj(key) {
+  const p = projects[key]; if (!p) return;
+  dId.textContent = p.id;
+  dTitle.textContent = p.title;
+  dMeta.innerHTML = Object.entries(p.meta).map(([k,v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
+  dBody.innerHTML = p.body;
+  detail.classList.add('open');
+  detail.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+}
+function closeProj() {
+  detail.classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.querySelectorAll('.proj[data-proj]').forEach(el => {
+  el.addEventListener('click', () => openProj(el.dataset.proj));
+});
+document.getElementById('detailClose').addEventListener('click', closeProj);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeProj(); });
+</script>
+</body>
+</html>
