@@ -1,32 +1,24 @@
-# James Wilson III — Portfolio
+# jw3 — personal site
 
-Terminal UI portfolio site. Single-page, no build step required.
+My corner of the internet. Built to have somewhere to put my work, my writing, and a bit of who I am outside of a resume — as a grad student finishing an M.S. in Cybersecurity at Fordham and someone who spends a lot of time thinking about all things tech and cybersecurity.
+The terminal aesthetic felt right. Most of what I do lives in a terminal anyway.
 
-## Deploy
+## what's here
+- **About** — background, current reads, what I'm building
+- **Work** — three research projects with full write-ups and paper PDFs
+- **Writing** — four blog posts drawn from the research and the home-lab
+- **Resume** — experience and education
+- **Contact** — email, LinkedIn, GitHub
 
-### Netlify (recommended)
-1. Drag the entire folder into https://app.netlify.com/drop
-2. Or: connect your GitHub repo and set publish directory to `/`
+## stack
 
-### GitHub Pages
-1. Push this folder to a repo (e.g. `jw3-portfolio`)
-2. Go to Settings → Pages → set source to `main` branch, root `/`
-3. Your site will be at `https://<username>.github.io/jw3-portfolio/`
+Plain HTML, CSS, and vanilla JS. No framework, no build step, no dependencies beyond a Google Font. Deployed on Netlify, auto-deploys on push to `main`.
 
-### Vercel
-1. `npm i -g vercel && vercel` from this directory
-2. No framework preset needed — static site
+## structure
 
-## Structure
 ```
-index.html          ← main site (Terminal UI)
-assets/
-  japan-arashiyama.png
-  subway-comiccon.png
-papers/
-  Adversarial_Face_Recognition__Detection_Framework_for_Video_Based_Attack_Sequences.pdf
-  Detecting_AI_Generated_Phishing_Through_Sender_Style_Communication_Drift.pdf
-  Technology_Review_Secure_AI_Paper.pdf
-_redirects          ← Netlify SPA redirect rule
-netlify.toml        ← Netlify config + security headers
+index.html
+assets/         ← photos
+papers/         ← research PDFs
+posts/          ← blog post pages
 ```
